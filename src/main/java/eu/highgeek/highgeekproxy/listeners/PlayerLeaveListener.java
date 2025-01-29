@@ -30,7 +30,7 @@ public class PlayerLeaveListener {
                         "se odpojil ze serveru.",
                         "default",
                         time,
-                        "global",
+                        "logs",
                         "&7Logout",
                         "game",
                         "",

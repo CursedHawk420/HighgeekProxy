@@ -3,12 +3,12 @@ package eu.highgeek.highgeekproxy;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import eu.highgeek.highgeekproxy.listeners.PlayerJoinListener;
 import eu.highgeek.highgeekproxy.listeners.PlayerLeaveListener;
-import eu.highgeek.highgeekproxy.redis.HighgeekConfig;
 import eu.highgeek.highgeekproxy.redis.RedisManager;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import java.nio.file.Path;
 public class HighgeekProxy {
 
     public ProxyServer server;
-    public HighgeekConfig config;
+    public FileConfig config;
     public final Logger logger;
     public final Path dataDirectory;
 
@@ -41,7 +41,7 @@ public class HighgeekProxy {
         //Config
         Files.createDirectories(dataDirectory);
         Path configPath = dataDirectory.resolve("HighgeekProxy.toml");
-        config = HighgeekConfig.read(configPath);
+        config = FileConfig.read(configPath);
 
         //Init services
         HighgeekProxy.redisManager = new RedisManager();
@@ -57,6 +57,7 @@ public class HighgeekProxy {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         this.logger.info("HighgeekProxy loading!");
+
         HighgeekProxy.instance = this;
     }
 
@@ -68,5 +69,10 @@ public class HighgeekProxy {
         catch (Exception e) {
             logger.error("An error prevented HighgeekProxy to load correctly: "+ e.toString());
         }
+    }
+
+    @Subscribe
+    public void onProxyShutDown(ProxyShutdownEvent event){
+        redisManager.stopSubscriber();
     }
 }

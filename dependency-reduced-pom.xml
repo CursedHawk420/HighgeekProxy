@@ -135,6 +135,16 @@
       </plugin>
     </plugins>
   </reporting>
+  <distributionManagement>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>https://gitlab.highgeek.eu/api/v4/projects/11/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>highgeek-maven</id>
+      <url>https://maven.highgeek.eu/releases</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

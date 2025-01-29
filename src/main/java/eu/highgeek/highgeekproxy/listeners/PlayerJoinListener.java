@@ -2,7 +2,7 @@ package eu.highgeek.highgeekproxy.listeners;
 
 import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.connection.LoginEvent;
+import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import eu.highgeek.highgeekproxy.HighgeekProxy;
 import eu.highgeek.highgeekproxy.objects.Message;
 
@@ -12,11 +12,11 @@ import java.time.Instant;
 public class PlayerJoinListener {
 
     @Subscribe
-    public EventTask onPlayerChat(LoginEvent event) {
+    public EventTask onPlayerChat(PlayerChooseInitialServerEvent event) {
         return EventTask.async(() -> processAsync(event));
     }
 
-    public void processAsync(LoginEvent event){
+    public void processAsync(PlayerChooseInitialServerEvent event){
         HighgeekProxy.getInstance().logger.info("Player logged to proxy!: " + event.getPlayer().getUsername());
 
         String time =  Instant.now().toString();
@@ -30,7 +30,7 @@ public class PlayerJoinListener {
                         "se pripojil k serveru.",
                         "default",
                         time,
-                        "global",
+                        "logs",
                         "&7Login",
                         "game",
                         "",
