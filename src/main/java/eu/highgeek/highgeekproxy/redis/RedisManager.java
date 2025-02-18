@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Getter
 public class RedisManager {
 
+    private boolean working;
     private volatile boolean running = true;
     private final static String host = HighgeekProxy.getInstance().config.getRedisIp();
     private final static int port = HighgeekProxy.getInstance().config.getRedisPort();
@@ -51,9 +52,14 @@ public class RedisManager {
     private void startSubscriber(){
         while (running) {  // Infinite loop for reconnection handling
             try (Jedis jedis = new Jedis(host, port)) {
-                HighgeekProxy.getInstance().logger.info("Connected to Redis, waiting for messages...");
-                jedis.psubscribe(subscriber, "*");
+                HighgeekProxy.getInstance().logger.info("Connecting to redis...");
+                if(jedis.get("keepalive") != null) {
+                    working = true;
+                    HighgeekProxy.getInstance().logger.info("Connected to Redis, waiting for messages...");
+                    jedis.psubscribe(subscriber, "*");
+                }
             } catch (Exception e) {
+                working = false;
                 if (!running) break; // Exit loop if shutting down
                 HighgeekProxy.getInstance().logger.info("Connection lost, retrying in 100 ms...");
                 try {
@@ -63,6 +69,7 @@ public class RedisManager {
             }
         }
     }
+
     public void stopSubscriber() {
         running = false; // Set flag to stop reconnection attempts
         if (subscriber != null) {

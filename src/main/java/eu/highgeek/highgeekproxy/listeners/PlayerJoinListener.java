@@ -20,7 +20,7 @@ public class PlayerJoinListener {
         HighgeekProxy.getInstance().logger.info("Player logged to proxy!: " + event.getPlayer().getUsername());
 
         String time =  Instant.now().toString();
-        String uuid = "chat:deaths:"+time.replaceAll(":", "-")+":server";
+        String uuid = "chat:logs:"+time.replaceAll(":", "-")+":server";
 
         HighgeekProxy.getRedisManager().addChatEntry(
                 new Message(
